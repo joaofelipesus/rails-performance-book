@@ -10,21 +10,26 @@ postgres: &postgres
   pool: 5
   username: postgres
   password: password
+  host: postgres
+  port: 5432
 
 mysql: &mysql
   adapter: mysql2
   encoding: utf8
   username: root
+  password: root
+  host: mysql
+  port: 3306
 
 development:
-  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*mysql" %>
+  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*postgres" %>
   database: moviestore_development
   cache:
-    <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*mysql" %>
+    <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*postgres" %>
     database: moviestore_development_cache
     migration_paths: db/cache_migrate
   queue:
-    <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*mysql" %>
+    <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*postgres" %>
     database: moviestore_development_queue
     migration_paths: db/queue_migrate
 
@@ -32,9 +37,9 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*mysql" %>
+  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*postgres" %>
   database: moviestore_test
 
 production:
-  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*mysql" %>
+  <<: <%= ENV['DB_MODE'] ? "*#{ENV['DB_MODE']}" : "*postgres" %>
   database: moviestore_production
