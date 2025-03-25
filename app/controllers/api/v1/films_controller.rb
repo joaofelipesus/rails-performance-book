@@ -4,7 +4,14 @@ class Api::V1::FilmsController < ApplicationController
   end
 
   def index
-    render json: scope.map { |film| Api::V1::FilmPresenter.new(film).to_json }
+    # render json: scope.map { |film| Api::V1::FilmPresenter.new(film).to_json }
+
+    # render json: cached_index_response
+    expiration_key = "#{Film.count}-#{Film.maximum(:updated_at)}"
+    aux = cached_response(expiration_key) do
+      scope.map { |film| Api::V1::FilmPresenter.new(film).to_json }
+    end
+    render json: aux
   end
 
   def rentals
@@ -35,4 +42,33 @@ class Api::V1::FilmsController < ApplicationController
 
     aux.select(:id, :title, :updated_at)
   end
+
+  # def cached_index_response
+  #   cached_response do
+  #     scope.map { |film| Api::V1::FilmPresenter.new(film).to_json }
+  #   end
+  # end
+
+  # def cached_response
+  #   cache_key = "films/index-cache"
+  #   object = Rails.cache.fetch(cache_key)
+  #   expiration_key = "#{Film.count}-#{Film.maximum(:updated_at)}"
+
+  #   # If what we find on the cache layer is a Hash
+  #   # and the expiration key in it is the same as the one we calculated
+  #   # remove the expiration key and return it.
+  #   if object&.last&.fetch(:expiration_key) == expiration_key
+  #     object.pop
+  #     return object
+  #   end
+
+  #   # If the object found on the cache is invalid
+  #   # we execute the block so we calculate a new response,
+  #   # we store on the cache layer with the expiration key mixed in it
+  #   # and then we return it wihtout the expiration key so it can be rendered.
+  #   yield.push(expiration_key: expiration_key).tap do |object|
+  #     Rails.cache.write(cache_key, object)
+  #     object.pop
+  #   end
+  # end
 end
