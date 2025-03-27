@@ -3,4 +3,16 @@ class Rental < ApplicationRecord
   belongs_to :inventory
   has_one :store, through: :inventory
   has_one :film, through: :inventory
+
+  after_create :cache_for_followers
+
+  private
+
+  def cache_for_followers
+    customer.followers.each do |follower|
+      timeline = Rails.cache.read(follower.timeline_cache_key) || []
+
+      Rails.cache.write(follower.timeline_cache_key, timeline.unshift(id)[0..9])
+    end
+  end
 end

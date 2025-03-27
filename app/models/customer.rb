@@ -5,4 +5,8 @@ class Customer < ApplicationRecord
 
   has_many :inverse_followings, foreign_key: 'followed_id', dependent: :destroy, class_name: 'Following'
   has_many :followers, through: :inverse_followings
+
+  def timeline_cache_key
+    @timeline_cache_key ||= "rental-timeline-#{id}"
+  end
 end
