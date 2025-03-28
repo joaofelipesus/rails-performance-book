@@ -53,8 +53,16 @@ gem 'cityhash'
 
 gem 'devise'
 
+# view and action cache
 gem 'actionpack-action_caching'
 gem 'actionpack-page_caching'
+
+# ActiveRecord cache layer
+gem 'identity_cache'
+gem 'dalli' # memcache client
+gem 'cityhash' # use C-Ruby to speed up identity_cache
+
+
 
 # Use Sass to process CSS
 # gem "sassc-rails"

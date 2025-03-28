@@ -1,4 +1,6 @@
 class Store < ApplicationRecord
+  include IdentityCache
+
   has_many :inventories
   has_many :films, through: :inventories
   belongs_to :most_rented_film, class_name: 'Film'

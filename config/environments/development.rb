@@ -23,7 +23,14 @@ Rails.application.configure do
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
-    config.cache_store = :memory_store
+    config.cache_store = :mem_cache_store, 'memcached:11211', {
+      namespace: "rails-performance-book",
+      expires_in: 1.day,
+      compress: true,
+      pool_size: 5,
+      servers: ["127.0.0.1:11211"]
+    }
+
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }
@@ -67,4 +74,13 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # identity_cache config
+  config.identity_cache_store = :mem_cache_store, 'memcached:11211', {
+    expires_in: 6.hours.to_i, # in case of network errors when sending a cache invalidation
+    failover: false, # avoids more cache consistency issues
+    namespace: "rails-performance-book",
+    compress: true,
+    pool_size: 5
+  }
 end
