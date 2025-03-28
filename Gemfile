@@ -53,6 +53,9 @@ gem 'cityhash'
 
 gem 'devise'
 
+gem 'actionpack-action_caching'
+gem 'actionpack-page_caching'
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 
